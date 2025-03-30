@@ -1,9 +1,10 @@
-import mongoose, {Schema,Document} from "mongoose"
+import mongoose, {Schema, Document} from "mongoose"
 
 export interface Message extends Document {
     content: string;
     createdAt: Date;
 }
+
 export interface User extends Document {
     username: string;
     email: string;
@@ -14,7 +15,6 @@ export interface User extends Document {
     isAcceptingMessage: boolean;
     messages: Message[];
 }
-
 
 const MessageSchema: Schema<Message> = new Schema({
     content: {
@@ -40,36 +40,32 @@ const UserSchema: Schema<User> = new Schema({
         required: [true, "email is required"],
         unique: true,
         match: [/[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/g, 'email is not valid'],
-        password: {
-            type: String,
-            required: [true, "password is required"],
-        },
-        verifyCode: {
-            type: String,
-            required: [true, "verify code is required"],
-        },
-        verifyCodeExpiry: {
-            type: Date,
-            required: [true, "verify code expiry is required"],
-        },
-        isVerified: {
-            type: Boolean,
-            default: false,
-        },
-        isAcceptingMessage: {
-            type: Boolean,
-            default: true,
-        },
-        messages: [MessageSchema],
-
-
-    }
+    },
+    password: {
+        type: String,
+        required: [true, "password is required"],
+    },
+    verifyCode: {
+        type: String,
+        required: [true, "verify code is required"],
+    },
+    verifyCodeExpiry: {
+        type: Date,
+        required: [true, "verify code expiry is required"],
+    },
+    isVerified: {
+        type: Boolean,
+        default: false,
+    },
+    isAcceptingMessage: {
+        type: Boolean,
+        default: true,
+    },
+    messages: [MessageSchema]
 });
-
 
 // Ensures the 'User' model is only created once to avoid errors in serverless environments (like Next.js),
 // where the model could be redefined multiple times across different invocations.
 const UserModel = (mongoose.models.User as mongoose.Model<User>) || mongoose.model<User>("User", UserSchema);
-
 
 export default UserModel;

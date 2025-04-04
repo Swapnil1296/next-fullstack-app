@@ -9,9 +9,10 @@
 
         
         await dbConnect();
-        console.log("sign up called");
+       
         try {
             const { username, email, password } = await request.json();
+            
             const existingUserVerifiedByUsername = await UserModel.findOne({ username, isVerified: true });
             if (typeof password !== "string") {
                 return Response.json(
